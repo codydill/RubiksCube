@@ -261,20 +261,16 @@ class Rubiks(Cube):
     def solve_edge_opposite(self, edge, st, ot):
         """Solves edge on the opposite face."""
         if st.orientation==self.opposite_face:     
-            #print "opposite"
             self.edge_turn_to(edge.position, self.opposite_face, ot.middle_orientation)
             self.move(ot.middle_orientation, 2)
         else:              
-            #print "opposite_other"
             self.edge_turn_to(edge.position, ot.orientation, ot.middle_orientation)
             self.move(ot.middle_orientation, 1)
             self.move(self.solving_face, 1)
-            #update            
             self.move(ot.orientation, 1, True)
             self.move(self.solving_face, 1 , True)
     def solve_edge_side(self, edge, st, ot):
         """Solves edge between solving face and opposite face."""
-        #print "edge_side"
         self.edge_turn_to(find_edge_position_intersect(ot.middle_orientation, self.solving_face), self.solving_face, ot.orientation, revert=True)
         self.edge_turn_to(edge.position, ot.orientation, self.solving_face)
         self.revert()
@@ -282,12 +278,10 @@ class Rubiks(Cube):
         """Solves edge on the solving face."""
         if is_solved([edge])==True: return
         if st.orientation==self.solving_face:
-            #print "same"
             self.move(ot.orientation, 1, revert=True)
             self.edge_turn_to(find_edge_position_intersect(ot.middle_orientation, self.solving_face), self.solving_face, ot.orientation, revert=True)
             self.revert(execution_order=True)
         else: 
-            #print "same_other"
             self.move(st.orientation, 1)
             self.edge_turn_to(find_edge_position_intersect(ot.middle_orientation, self.solving_face), self.solving_face, ot.orientation, revert=True)
             self.edge_turn_to(edge.position, ot.orientation, self.solving_face)
@@ -309,7 +303,6 @@ class Rubiks(Cube):
     def solve_corner_same(self, corner):
         """Solves corner on the solving face."""
         st, primary, tertiary=self.corner_tile_info(corner)
-        #print "Corner Same"
         if st.orientation==self.solving_face:
             if primary.orientation==primary.middle_orientation: return
             self.orientation_turn_to(primary.orientation, tertiary.orientation, self.opposite_face, True)
@@ -325,7 +318,6 @@ class Rubiks(Cube):
         """Solves corner on the opposite face."""
         st, primary, tertiary=self.corner_tile_info(corner)
         between_mids=find_edge_position_intersect(primary.middle_orientation, tertiary.middle_orientation)
-        #print "Corner Opposite"
         if st.orientation==self.opposite_face:
             self.orientation_turn_to(self.opposite_face, primary.orientation, primary.middle_orientation)
             self.edge_turn_to(between_mids, tertiary.middle_orientation, self.opposite_face, True)
@@ -343,7 +335,6 @@ class Rubiks(Cube):
                     if tile.color==self.solving_color:
                         if cube.position in Cube.move_face_positions[self.solving_face]: self.solve_corner_same(cube)
                         elif cube.position in Cube.move_face_positions[self.opposite_face]: self.solve_corner_opposite(cube)
-                        else: print "Corner position error."
                         cube.solved=True
                         break
 
@@ -391,7 +382,6 @@ class Rubiks(Cube):
 
     def orient_third_edge_four(self, non_oriented):
         """Orients four of the edges on the third layer."""
-        #print "----------None!!!!!!----------"
         orientations=[0, 1, 2, 3, 4, 5]
         orientations.remove(self.opposite_face)
         orientations.remove(self.solving_face)
@@ -423,7 +413,6 @@ class Rubiks(Cube):
                 b=tile.orientation
         directly_across=(a==Tile.color_opposites[b])
         if directly_across==True:
-            #print "-----Two Across-----"
             orientations=[0, 1, 2, 3, 4, 5]
             for each in [self.opposite_face, self.solving_face, a, b]:
                 orientations.remove(each)
@@ -434,7 +423,6 @@ class Rubiks(Cube):
             self.orientation_turn_to(c, self.opposite_face, a)
             self.revert()
         else:
-            #print "-----Two-----"
             self.orientation_turn_to(a, self.opposite_face, b, True)
             self.orientation_turn_to(self.opposite_face, b, a)
             self.orientation_turn_to(b, a, self.opposite_face, True)
@@ -444,7 +432,6 @@ class Rubiks(Cube):
         self.solve_third_edge_four_preparation(oriented)
     def solve_third_edge_four_preparation(self, oriented):
         """Orients the third layer so that 1 of the edges is solved, unless all 4 are already solved."""
-        #print "-----Four Prep-----"
         correct=0
         while correct in [0,2]:
             correct=self.count_third_edge_four(oriented)
@@ -494,7 +481,6 @@ class Rubiks(Cube):
         self.solve_third_edge_four(unmoved, unmoved_opposite, mover, mover_opposite)
     def orient_third_edge_mix(self, unmoved, mover):
         """Mixes the third layer edges if 1 solved edge cannot be attained."""
-        #print "-----Four Mix-----"
         self.orientation_turn_to(mover.middle_orientation, self.solving_face, unmoved.middle_orientation, True)
         self.orientation_turn_to(self.opposite_face, mover.middle_orientation, unmoved.middle_orientation)
         self.revert()
@@ -504,7 +490,6 @@ class Rubiks(Cube):
         self.revert()
     def solve_third_edge_four(self, unmoved, unmoved_opposite, mover, mover_opposite):
         """Solves the edges on the third layer after they have been oriented."""
-        #print "-----Four-----"
         self.orientation_turn_to(mover.orientation, self.solving_face, unmoved.middle_orientation, True)
         self.orientation_turn_to(self.opposite_face, mover.middle_orientation, mover.orientation)
         self.revert()
@@ -681,9 +666,6 @@ class Rubiks(Cube):
                 break
 
 
-
-        
-
     def solved_check(self):
         correct=0
         for cube in self.cubes:
@@ -691,37 +673,6 @@ class Rubiks(Cube):
                 if tile.orientation==tile.middle_orientation:
                     correct +=1
             cube.solved=False
-        if (correct==54)==False:
-            print "False!"
-
-
-ruby=Rubiks()
-t=[]
-n=100
-for i in range(n):
-    #print "-----Scramble-----"
-    ruby.scramble(20)
-    ruby.solve_initiate("W")
-    #print "-----First Edges-----"
-    ruby.solve_first_edges()
-    #print "-----First Corners-----"
-    ruby.solve_first_corners()
-    #print "-----Second Layer-----"
-    ruby.solve_second_layer()
-    #print "-----Third Edges-----"
-    ruby.solve_third_edges()
-    #print "-----Third Corners-----"
-    ruby.solve_third_corners()
-    #print "-----Scramble-----"
-    ruby.solved_check()
-    t.append(ruby.move_count)
-    ruby.move_count=-20
-t.sort()
-total=0
-for count in t:
-    total +=count
-print "Minimum:", min(t)
-print "Maximum:", max(t)
-print "Average moves:", total/n
+        return correct==54
 
 
