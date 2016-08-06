@@ -139,10 +139,6 @@ class Rubiks(Cube):
         """Face is the string of the move needed. Ex: 'Right'
         Multiple is the number of 90degree turns.
         Counter is the bool of whether the turn is counter-clockwise."""
-                        #Uncomment below to print each move.
-        #if type(face)==int:
-        #    print Rubiks.move_names[face], multiple, counter
-        #else: print face, multiple, counter
         if revert==True:                #move inserted into list to later be called to move back.
             self.revert_list.insert(0,(face, multiple, counter))
         if multiple==0: return
