@@ -1,6 +1,6 @@
 import random
 
-class Tile(object):
+class Tile():
     """Color and Tile are integers. When printing, 
     the integers are used as indices for their respective name lists."""
     def __init__(self, color, orientation):
@@ -13,7 +13,7 @@ class Tile(object):
     orientation_names=['Front','Back','Right','Left','Up','Down']
     color_opposites={0:1, 1:0, 2:3, 3:2, 4:5, 5:4}
 
-class Cube(Tile):
+class Cube():
     """Cube is a composition of Tile(s) having the same position.
     Type is an integer declared when generating a Solved Cube
     and represents the number of tiles in the cube."""
@@ -77,7 +77,7 @@ def is_solved(cubes):
     return True
 
 
-class Rubiks(Cube):
+class Rubiks():
     """Generates a solved Rubik's Cube composed of other cubes."""
     #           Used in generating a solved cube. Each position is mapped to values, 
     #       one for each tile in the position. Each value is used to create a tile with
@@ -661,6 +661,14 @@ class Rubiks(Cube):
             if len(not_solved)==0:
                 break
 
+    def solve_cube(self, solving_side):
+            self.scramble(20)
+            self.solve_initiate(solving_side)
+            self.solve_first_edges()
+            self.solve_first_corners()
+            self.solve_second_layer()
+            self.solve_third_edges()
+            self.solve_third_corners()
 
     def solved_check(self):
         correct=0
@@ -671,4 +679,9 @@ class Rubiks(Cube):
             cube.solved=False
         return correct==54
 
-
+if __name__ == "__main__":
+        cube = Rubiks()
+        for i in range (10):
+            cube.scramble(20)
+            cube.solve_cube("O")
+            print cube.solved_check()
